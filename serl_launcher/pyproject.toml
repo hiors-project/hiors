@@ -1,0 +1,102 @@
+[project]
+name = "serl_launcher"
+version = "0.1.2"
+description = "Library for RL experiments"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    #"augmax>=0.3.4",
+    "gym>=0.26",
+    "gym-aloha>=0.1.1",
+    "numpy>=1.24.3,<2.0.0",
+    #"flax==0.10.2",
+    #"distrax>=0.1.2",
+    "ml_collections==1.0.0",
+    "tqdm>=4.60.0",
+    "tqdm-loggable>=0.2",
+    #"chex>=0.1.85",
+    #"optax>=0.1.5",
+    "absl-py>=0.12.0",
+    "scipy==1.11.4",
+    "wandb>=0.19.1",
+    #"tensorflow>=2.15.0",
+    #"tensorflow_probability>=0.23.0",
+    "einops>=0.8.0",
+    "imageio>=2.36.1",
+    "moviepy>=1.0.3",
+    "gymnasium==0.29.1",
+    #"tf-keras",
+    "pynput",
+    "natsort",
+    "matplotlib",
+    "zmq",
+    "typing_extensions>=4.12.2",
+    "opencv-python>=4.10.0.84",
+    "lz4",
+    "dm-tree>=0.1.8",
+    "equinox>=0.11.8",
+    "flatbuffers>=24.3.25",
+    "fsspec[gcs]>=2024.6.0",
+    #"jax[cuda12]==0.5.3",
+    #"jaxtyping==0.2.36",
+    "numpydantic>=1.6.6",
+    "openpi-client",
+    #"orbax-checkpoint==0.11.13",
+    "pillow>=11.0.0",
+    "s3fs>=2024.9.0",
+    "sentencepiece>=0.2.0",
+    "torch>=2.7.0",
+    "torchvision>=0.22.0",
+    "tyro>=0.9.5",
+    "boto3>=1.35.7",
+    "types-boto3[boto3,s3]>=1.35.7",
+    "filelock>=3.16.1",
+    "beartype==0.19.0",
+    "treescope>=0.1.7",
+    "transformers==4.48.1",
+    "rich>=14.0.0",
+    "polars>=1.30.0",
+    #"accelerate==0.30.1",
+    "accelerate==1.8.1",
+    "gpustat",
+    #"keyboard",
+    "deepspeed==0.16.4",
+    "lerobot@git+https://github.com/huggingface/lerobot.git@638d411cd3acf32c28d8c2120f3c41bda8bb15d4",
+    "agentlace@git+https://github.com/youliangtan/agentlace.git@cf2c337c5e3694cdbfc14831b239bd657bc4894d",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "pytest>=8.3.4",
+    "ruff>=0.8.6",
+    "ipykernel>=6.29.5",
+    "ipywidgets>=8.1.5",
+    "pynvml>=12.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/rail-berkeley/serl"
+
+[tool.hatch.build.targets.wheel]
+packages = ["serl_launcher"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build" 

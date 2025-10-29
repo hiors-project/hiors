@@ -1,0 +1,42 @@
+# data/
+uv.lock
+debug/
+vis_tools/
+demo_data/
+.venv/
+ckpt/
+videos*/
+outputs/
+tensorboard/
+MODEL/
+google/
+*output.mp4
+.hypothesis/
+# examples/experiments/bimanual_pnp/ckpt*
+# examples/experiments/bimanual_pnp/transformer_nnx*
+# examples/experiments/bimanual_pnp/demo_data/
+# examples/experiments/bimanual_pnp/classifier_ckpt
+# examples/experiments/bimanual_pnp/trajectory_evaluation_results
+# examples/experiments/bimanual_pnp/debug*
+.vscode/
+.code.yml
+.editorconfig
+serl_robot_infra/serl_robot_infra.egg-info/
+
+**/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+MANIFEST
+
+# MUJOCO_LOG.TXT
+MUJOCO_LOG.TXT
+*.pkl
+_METADATA
+checkpoint
+wandb/

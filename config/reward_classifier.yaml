@@ -1,0 +1,56 @@
+defaults:
+  - task: dobot_pnp
+  - _self_
+
+# Reward Classifier Configuration
+unique_identifier: ""
+
+# Training parameters
+seed: 42
+# num_steps: 5000
+num_steps: 1000
+batch_size: null  # will be set to per_device_batch_size * num_gpus
+train_micro_batch_size_per_gpu: 8
+max_grad_norm: 1.0
+
+# Replay buffer settings
+replay_buffer_capacity: 200000
+# num_transitions: 1000
+
+# Dataset split
+# val_split_ratio: 0.1
+val_split_ratio: 0.2
+
+# Logging and evaluation
+log_period: 10
+eval_period: 200
+checkpoint_period: 500
+
+# Save/load checkpoints
+checkpoint_path: "./reward_model"
+
+# Optimizer Configuration
+optimizer:
+  lr: 2.5e-5
+  betas: [0.9, 0.95]
+  eps: 1.0e-8
+  weight_decay: 1.0e-10
+
+lr_scheduler:
+  num_warmup_steps: 50
+  num_decay_steps: 1000
+  peak_lr: ${optimizer.lr} # should be the same as optimizer's lr
+  decay_lr: 2.5e-6
+
+# Training Infrastructure Settings
+training:
+  num_gpus: 4
+  mixed_precision: "no"  # "fp16", "bf16", or "no"
+  gradient_accumulation_steps: 1
+  deepspeed_config: "${oc.env:HIORS_PATH}/config/zero2.json"
+
+# Logging Configuration
+logging:
+  logger: "wandb"  # "wandb", "tensorboard", "debug", "offline"
+  project: "hiors-pytorch"
+  entity: "hiors-pytorch"

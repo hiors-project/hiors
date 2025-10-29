@@ -1,0 +1,58 @@
+# Copyright 2025 Bytedance Ltd. and/or its affiliates
+#
+# This code is inspired by the torchtune.
+# https://github.com/pytorch/torchtune/blob/main/torchtune/utils/_device.py
+#
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license in https://github.com/pytorch/torchtune/blob/main/LICENSE
+
+import torch
+
+is_cuda_available = torch.cuda.is_available()
+
+def get_device_name() -> str:
+    """Function that gets the torch.device based on the current machine.
+    This currently only supports CPU, CUDA.
+    Returns:
+        device
+    """
+    if is_cuda_available:
+        device = "cuda"
+    else:
+        device = "cpu"
+    return device
+
+
+def get_torch_device() -> any:
+    """Return the corresponding torch attribute based on the device type string.
+    Returns:
+        module: The corresponding torch device namespace, or torch.cuda if not found.
+    """
+    device_name = get_device_name()
+    try:
+        return getattr(torch, device_name)
+    except AttributeError:
+        print(f"Device namespace '{device_name}' not found in torch, try to load torch.cuda.")
+        return torch.cuda
+
+
+def get_device_id() -> int:
+    """Return current device id based on the device type.
+    Returns:
+        device index
+    """
+    return get_torch_device().current_device()
+
+
+def get_nccl_backend() -> str:
+    """Return nccl backend type based on the device type.
+    Returns:
+        nccl backend type string.
+    """
+    if is_cuda_available:
+        return "nccl"
+    else:
+        raise RuntimeError(f"No available nccl backend found on device type {get_device_name()}.")
+

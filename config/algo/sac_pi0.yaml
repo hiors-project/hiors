@@ -1,0 +1,74 @@
+# @package _global_
+
+# Algorithm: SAC with Pi0 backbone
+agent: "sac_pi0"
+setup_mode: "pi0"
+
+# RL-SFT Training
+# rl_steps: 100      # Number of RL training steps in each cycle
+# sft_steps: 0       # Number of SFT training steps in each cycle
+rl_steps: 0      # Number of RL training steps in each cycle
+sft_steps: 100       # Number of SFT training steps in each cycle
+
+# rl_use_offline_data: true
+rl_use_offline_data: false
+rl_use_online_data: true
+sft_use_offline_data: true
+sft_use_online_data: true
+
+# Training Configuration
+# train_micro_batch_size_per_gpu: 4  # rl with concat
+train_micro_batch_size_per_gpu: 8  # rl without concat
+cta_ratio: 2  # run 1 actor update with each cta_ratio-1 critic update
+discount: 1.0
+max_grad_norm: 1.0
+
+max_steps: 100000
+successful_training_starts: 0
+training_starts: 10  # online training
+actor_training_starts: 150  # critic warmup
+# actor_training_starts: 0  # for debugging
+sft_training_starts: 0
+steps_per_update: 50
+# steps_per_update: 1000000 # for only offline training
+
+# SAC-specific parameters
+sac:
+  soft_target_update_rate: 0.005
+  reward_bias: 0.0
+  critic_ensemble_size: 2
+  critic_subsample_size: null
+  temperature_init: 1.0
+  backup_entropy: false
+  target_entropy: null  # Will be set to -action_dim/2 automatically
+  cql_weight: 0.0 # we do not compute expensive cql loss
+  distill_weight: 10.0
+
+# Optimizer Configuration
+optimizer:
+  actor:
+    lr: 2.5e-5  # for cosine scheduler
+    # lr: 2.5e-6  # for constant scheduler
+    betas: [0.9, 0.95]
+    eps: 1.0e-8
+    weight_decay: 1.0e-10
+  critic:
+    # lr: 2.5e-5
+    lr: 3.0e-4
+    betas: [0.9, 0.95]
+    eps: 1.0e-8
+    weight_decay: 1.0e-10
+  temperature:
+    lr: 3.0e-4
+    betas: [0.9, 0.95]
+    eps: 1.0e-8
+    weight_decay: 1.0e-10
+
+lr_scheduler:
+  # sft
+  # num_warmup_steps: 1000
+  # num_decay_steps: 30000
+  num_warmup_steps: 200
+  num_decay_steps: 1000
+  peak_lr: ${optimizer.actor.lr} # should be the same as optimizer's lr
+  decay_lr: 2.5e-6

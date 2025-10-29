@@ -1,0 +1,27 @@
+[project]
+name = "serl_robot_infra"
+version = "0.0.1"
+description = "Robot infrastructure for SERL"
+requires-python = ">=3.11"
+dependencies = [
+    "gymnasium",
+    "pyrealsense2",
+    "pymodbus==2.5.3",
+    "opencv-python",
+    "pyquaternion",
+    "pyspacemouse",
+    "hidapi",
+    "pyyaml",
+    "rospkg",
+    "scipy",
+    "requests",
+    "flask",
+    "defusedxml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["dorobot_env"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build" 

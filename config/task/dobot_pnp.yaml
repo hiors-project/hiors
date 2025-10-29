@@ -1,0 +1,103 @@
+# @package _global_
+
+exp_name: "dobot_pnp"
+
+# Model Configuration
+encoder_type: "resnet-pretrained"
+image_keys: ["cam_left_wrist", "cam_right_wrist", "cam_high"]
+critic_keys: ["cam_left_wrist", "cam_high"]
+proprio_keys:
+  - "end_effector/left_hand/observation"  # 7 values: xyz + quat
+  - "gripper/left_hand/observation"       # 1 value: gripper position
+  - "end_effector/right_hand/observation" # 7 values: xyz + quat
+  - "gripper/right_hand/observation"      # 1 value: gripper
+
+# OpenPI/Pi0 Configuration
+openpi:
+  config_name: "pi0_xtrainer"
+  checkpoint_dir: "${oc.env:HIORS_PATH}/MODEL/pi0"
+  # tokenizer_path: "${oc.env:OPENPI_TOKENIZER_PATH}"
+
+# Critic Network Architecture
+critic_network:
+  # input_dim: 1276  # 512 (image features) + 64 (proprioception) + 14 * 50 (action features)
+  input_dim: 1788 # 512*2 (image features) + 64 (proprioception) + 14 * 50 (action features)
+  hidden_dims: [256, 256]
+  activations: "gelu"
+  use_layer_norm: True
+  activate_final: False
+
+# Environment Configuration
+environment:
+  host: "0.0.0.0"
+  port: 8080
+  save_video: true
+  hz: 10
+
+  wait_for_after_done_time: 1
+  wait_for_after_reset_time: 2
+
+  image_keys: "${image_keys}"
+  image_size: [298, 224]  # width, height
+  image_crop: {}
+
+  # Reward configuration
+  reward_type: "human"  # "human", "outcome", "process", "naive"
+  classifier_image_crop:  # [x, y, width, height]
+    "cam_high": [0, 0, 298, 224]
+    "cam_left_wrist": [0, 0, 298, 224]
+    "cam_right_wrist": [0, 0, 298, 224]
+  classifier_keys: ["cam_high", "cam_left_wrist"]
+  classifier_use_proprio: false
+  classifier_path: "./ckpt/reward_orm/1000"
+  classifier_n_way: 2
+
+  # Robot configuration
+  reset_pose: [
+    -1.4143293345806143, -0.007494625861442117, -1.604660826687775, 0.05714512731652199, 1.5477278364135993, 0.2087385212340518, 1.0,
+    1.4781365380845926, 0.05840808673794305, 1.4879608830958595, 0.004426664285670956, -1.5682337605097507, 0.10902977002148209, 1.0
+  ]
+  random_reset: false
+  random_xyz_range: 0.01
+  max_state_chunk_len: 50
+  display_image: false
+  max_episode_length: 20
+  ignore_step_threshold: 2
+  control_mode: "ee"
+  action_horizon: 50
+  action_dim: 14
+  state_dim: ${environment.action_dim}
+  pose_limits:
+    high: [-1.306, 0.392, -0.981, 0.548, 1.733, 0.552, 1.0, 1.380, -0.118, 1.730, -0.022, -1.510, -0.350, 0.973]
+    low: [-1.800, -0.649, -2.239, -0.5, 1.437, -0.420, 0.0, 1.380, -0.118, 1.730, -0.022, -1.510, -0.350, 0.973]
+  gripper_sleep: 1.0
+  gripper_threshold: 0
+  success_threshold: 0.7
+
+# Dataset Configuration
+dataset:
+  type: lerobot
+  lerobot_dir: "${oc.env:HF_LEROBOT_HOME}/dobot"
+  replay_buffer_name: "replay_buffer"
+  successful_buffer_name: "successful_buffer"
+  image_transforms:
+    enable: true
+    max_num_transforms: 3
+
+  repo_id: [
+    # 'replay_buffer_traj_36_0818',
+    # 'successful_buffer_traj_25_0818',
+  ]
+
+  observation_keys:
+    - "observation.images.cam_left_wrist"
+    - "observation.images.cam_right_wrist"
+    - "observation.images.cam_high"
+    - "observation.state"
+
+  episodes: null
+  video_backend: "pyav"
+  local_files_only: true
+  use_imagenet_stats: false
+  use_drq: false
+  success_threshold: ${environment.success_threshold}

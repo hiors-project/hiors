@@ -1,0 +1,51 @@
+defaults:
+  - algo: sac_pi0
+  - task: dobot_pnp
+  - _self_
+
+# Basic experiment settings
+unique_identifier: ""
+seed: 42
+
+# Runtime flags
+learner: false  # Set to true for learner node
+actor: false    # Set to true for actor node
+ip: "localhost" # IP address of the learner
+
+# =============================================================================
+# TRAINING CONFIGURATION
+# =============================================================================
+# if bs = B, then each process has demo bs = B/num_processes/2, replay bs = B/num_processes/2
+# e.g., if bs = 60, num_processes = 5, then each process has demo bs = 6, replay bs = 6, total bs = 12
+batch_size: null  # will be set to per_device_batch_size * num_gpus
+
+# Replay buffer settings
+replay_buffer_capacity: 200000
+random_steps: 0
+
+# Logging and evaluation
+log_period: 10
+eval_period: 2000 # not used
+checkpoint_period: 500
+buffer_period: 500  # suppose training speed is 1.5s/it, then buffer_period=100 means 150s for each buffer saving
+
+# Evaluation settings
+eval_checkpoint_step: 0  # evaluate the checkpoint or not (0 = disabled)
+# eval_checkpoint_step: 1
+eval_n_trajs: 100
+
+# Save/load checkpoints
+checkpoint_path: null  # Path to save/load checkpoints
+
+# Training Infrastructure Settings
+training:
+  num_gpus: 4
+  mixed_precision: "bf16"  # "fp16", "bf16", or "no"
+  gradient_accumulation_steps: 1
+  deepspeed_config: "${oc.env:HIORS_PATH}/config/zero2.json"
+
+# Logging Configuration
+logging:
+  logger: "wandb"  # "wandb", "tensorboard", "debug", "offline"
+  project: "hiors-pytorch"
+  entity: "hiors-pytorch"
