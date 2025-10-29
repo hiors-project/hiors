@@ -1,5 +1,7 @@
 # Hi-ORS: Human-in-the-loop Online Rejection Sampling for Robotic Manipulation
 
+| Authors: Guanxing Lu, Rui Zhao
+
 ## 🛠️ Installation
 
 - [Installation Guide](docs/INSTALL.md)
