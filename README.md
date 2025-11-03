@@ -23,7 +23,12 @@ Our code is built upon [hil-serl](https://github.com/rail-berkeley/hil-serl) and
 If you find this repository helpful, please consider citing:
 
 ```
-TBD
+@article{lu2025human,
+  title={Human-in-the-loop Online Rejection Sampling for Robotic Manipulation},
+  author={Lu, Guanxing and Zhao, Rui and Lin, Haitao and Zhang, He and Tang, Yansong},
+  journal={arXiv preprint arXiv:2510.26406},
+  year={2025}
+}
 ```
 
 
